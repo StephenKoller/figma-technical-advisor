@@ -1,0 +1,34 @@
+{
+  "name": "figma-technical-advisor",
+  "version": "1.0.0",
+  "description": "A Figma plugin that provides engineering feedback on design feasibility and implementation effort",
+  "scripts": {
+    "build": "build-figma-plugin --typecheck --minify",
+    "watch": "build-figma-plugin --typecheck --watch",
+    "dev": "build-figma-plugin --typecheck --watch"
+  },
+  "figma-plugin": {
+    "editorType": ["figma"],
+    "name": "Technical Advisor",
+    "main": "src/main.ts",
+    "ui": "src/ui.tsx",
+    "networkAccess": {
+      "allowedDomains": ["api.anthropic.com"]
+    },
+    "documentAccess": "dynamic-page"
+  },
+  "keywords": ["figma", "plugin", "engineering", "feedback", "ai"],
+  "author": "Stephen Koller",
+  "license": "MIT",
+  "devDependencies": {
+    "@create-figma-plugin/build": "^3.0.0",
+    "@create-figma-plugin/tsconfig": "^3.0.0",
+    "@create-figma-plugin/ui": "^3.0.0",
+    "@create-figma-plugin/utilities": "^3.0.0",
+    "@figma/plugin-typings": "^1.95.0",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "preact": "^10.19.0"
+  }
+}
