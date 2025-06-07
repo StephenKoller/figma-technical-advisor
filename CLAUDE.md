@@ -37,7 +37,42 @@ Design Selection → Export Generation → Claude API Analysis → Feedback Disp
 
 ## Development Setup
 
-This repository is currently in initial setup phase. Development commands will be added as the project structure is established.
+### Prerequisites
+- Node.js 16+ 
+- npm or yarn
+- Figma desktop app for plugin testing
+- Claude API key from Anthropic
+
+### Installation
+```bash
+npm install
+```
+
+### Development Commands
+```bash
+# Build the plugin for production
+npm run build
+
+# Watch mode for development (rebuilds on changes)
+npm run watch
+npm run dev  # alias for watch
+
+# Type checking only
+npx tsc --noEmit
+```
+
+### Plugin Testing
+1. Run `npm run build` to generate the manifest.json
+2. Open Figma desktop app
+3. Use Quick Actions (Cmd/Ctrl + /) → "Import plugin from manifest"
+4. Select the generated `manifest.json` file
+5. Plugin appears in Plugins menu as "Technical Advisor"
+
+### API Configuration
+The plugin requires a Claude API key for analysis:
+- Get your API key from https://console.anthropic.com/
+- The plugin will prompt for the API key on first use
+- API key is stored securely in browser localStorage
 
 ## Key Considerations
 
