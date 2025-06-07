@@ -14,15 +14,30 @@ function Plugin() {
   const [showApiKeyInput, setShowApiKeyInput] = useState(false)
 
   useEffect(() => {
-    // Check for saved API key
-    const savedApiKey = localStorage.getItem('claude-api-key')
-    if (savedApiKey && ClaudeAPIService.isValidApiKey(savedApiKey)) {
-      setApiKey(savedApiKey)
-    } else {
-      setShowApiKeyInput(true)
-    }
+    // Request saved API key from main thread
+    emit('GET_API_KEY')
 
     // Listen for messages from the main thread
+    on('API_KEY_RETRIEVED', (savedApiKey: string | null) => {
+      if (savedApiKey && ClaudeAPIService.isValidApiKey(savedApiKey)) {
+        setApiKey(savedApiKey)
+        setShowApiKeyInput(false)
+      } else {
+        setShowApiKeyInput(true)
+      }
+    })
+
+    on('API_KEY_SAVED', (success: boolean) => {
+      if (success) {
+        setShowApiKeyInput(false)
+        setError(null)
+        console.log('API Key saved successfully')
+      } else {
+        setError('Failed to save API key. Please try again.')
+        console.log('API Key save failed')
+      }
+    })
+
     on('NO_SELECTION', () => {
       setError('Please select a design element to analyze')
       setIsAnalyzing(false)
@@ -84,12 +99,15 @@ function Plugin() {
   }
 
   const handleApiKeySubmit = () => {
+    console.log('API Key submitted:', apiKey ? 'Present' : 'Empty')
+    console.log('API Key length:', apiKey.length)
+    console.log('API Key starts with sk-ant-:', apiKey.startsWith('sk-ant-'))
+    
     if (ClaudeAPIService.isValidApiKey(apiKey)) {
-      localStorage.setItem('claude-api-key', apiKey)
-      setShowApiKeyInput(false)
-      setError(null)
+      emit('SAVE_API_KEY', apiKey)
     } else {
-      setError('Invalid API key format. Please check your Claude API key.')
+      setError('Invalid API key format. Claude API keys must start with "sk-ant-" and be at least 20 characters long.')
+      console.log('API Key validation failed')
     }
   }
 
@@ -129,7 +147,10 @@ function Plugin() {
             password
           />
           <VerticalSpace space="small" />
-          <Button onClick={handleApiKeySubmit} fullWidth>
+          <Button onClick={() => {
+            console.log('Save API Key button clicked')
+            handleApiKeySubmit()
+          }} fullWidth>
             Save API Key
           </Button>
         </div>

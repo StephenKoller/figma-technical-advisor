@@ -13,7 +13,7 @@
     "main": "src/main.ts",
     "ui": "src/ui.tsx",
     "networkAccess": {
-      "allowedDomains": ["api.anthropic.com"]
+      "allowedDomains": ["https://api.anthropic.com"]
     },
     "documentAccess": "dynamic-page"
   },

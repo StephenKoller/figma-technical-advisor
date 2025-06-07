@@ -8,6 +8,8 @@ export default function () {
   // Listen for messages from the UI
   on('ANALYZE_SELECTION', handleAnalyzeSelection)
   on('CLOSE_PLUGIN', handleClosePlugin)
+  on('SAVE_API_KEY', handleSaveApiKey)
+  on('GET_API_KEY', handleGetApiKey)
 }
 
 async function handleAnalyzeSelection() {
@@ -35,4 +37,24 @@ async function handleAnalyzeSelection() {
 
 function handleClosePlugin() {
   figma.closePlugin()
+}
+
+async function handleSaveApiKey(apiKey: string) {
+  try {
+    await figma.clientStorage.setAsync('claude-api-key', apiKey)
+    emit('API_KEY_SAVED', true)
+  } catch (error) {
+    console.error('Failed to save API key:', error)
+    emit('API_KEY_SAVED', false)
+  }
+}
+
+async function handleGetApiKey() {
+  try {
+    const apiKey = await figma.clientStorage.getAsync('claude-api-key')
+    emit('API_KEY_RETRIEVED', apiKey || null)
+  } catch (error) {
+    console.error('Failed to retrieve API key:', error)
+    emit('API_KEY_RETRIEVED', null)
+  }
 }
